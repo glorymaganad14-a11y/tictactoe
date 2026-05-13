@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body class="bg-black">
+  <div id="app">
+    <div v-for="play" class="flex justify-center mt-50">
+      <button class="w-30 h-15 bg-white/20 backdrop-blur-lg shadow-xl/30 shadow-white text-white text-2xl font-bold rounded-lg hover:scale-110" @click="showgame">Play</button>
+    </div>
+    <div id="game" v-if="game">
+      <div class="flex justify-center mt-30 mb-5">
+        <h1 class="text-5xl font-semibold text-white"><span class="text-red-600">Tic</span>Tac<span
+            class="text-blue-600">Toe</span></h1>
+      </div>
+
+      <div class="flex justify-center">
+        <div class="flex grid grid-cols-3 gap-3">
+          <div v-for="(row, rowIndex) in Boardcells">
+            <div v-for="(cell, colIndex) in row"
+              class="w-30 h-30 bg-white/10 backdrop-blur-lg rounded-lg cursor-pointer hover:scale-105 mt-3 text-5xl font-black text-center flex items-center justify-center shadow-xl/30 shadow-white"
+              @click="clickCell(rowIndex, colIndex)"
+              :class="{'text-5xl font-black text-red-600 border-2 border-red-600': cell ==='X', 'text-5xl font-black text-blue-600 border-2 border-blue-600': cell === 'O'}">
+              {{cell}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-center mt-5">
+        <h1 class="text-white text-3xl font-bold">{{message}}</h1>
+      </div>
+      <div class="flex justify-center mt-5">
+        <button @click="resetBtn"
+          class="w-25 h-10 bg-white/20 backdrop-blur-lg text-2xl text-white rounded-full text-center hover:scale-105 cursor-pointer">reset</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    Vue.createApp({
+      data() {
+        return {
+        game: false,
+        play: true,
+          Boardcells: [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+          ],
+
+          currentPlayer: "X",
+          message: "Lets play"
+        }
+      }, methods: {
+        clickCell(rowIndex, colIndex) {
+          if (this.Boardcells[rowIndex][colIndex] === "") {
+            this.Boardcells[rowIndex][colIndex] = this.currentPlayer;
+
+            if (this.isWinner(this.currentPlayer)) {
+              this.message = `player ${this.currentPlayer} wins!`;
+
+            }
+            else if (this.isDraw()) {
+              this.message = 'its a draw';
+              setTimeout(this.resetBtn, 1000);
+
+            }
+            else {
+              this.currentPlayer = this.currentPlayer === "X" ? "O" : "X";
+              this.message = `player ${this.currentPlayer}'s turn!`;
+            }
+          };
+        },
+        isWinner(player) {
+          const bc = this.Boardcells;
+          for (let i = 0; i < 3; i++) {
+            if (bc[i][0] === player && bc[i][1] === player && bc[i][2] === player) return true;
+            if (bc[0][i] === player && bc[1][i] === player && bc[2][i] === player) return true;
+          }
+          //  diagonal
+          if (bc[0][0] === player && bc[1][1] === player && [2][2] === player) return true;
+          if (bc[0][2] === player && bc[1][1] === player && [2][0] === player) return true;
+          return false;
+        },
+        isDraw() {
+          let allClick = false;
+
+          for (let row of this.Boardcells) {
+            for (let cell of row) {
+              if (cell === "")
+                allClick = true;
+            }
+          }
+          if (!allClick && !this.isWinner("X") && !this.isWinner("O")) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+        resetBtn() {
+          this.Boardcells = [
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+          ],
+            this.currentPlayer = "X",
+            this.message = "Lets play"
+
+        },
+        showgame(){
+          this.game = true,
+          this.play = false
+        }
+
+      },
+    }).mount('#app');
+  </script>
+</body>
+
+</html>
