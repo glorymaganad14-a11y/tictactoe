@@ -11,7 +11,7 @@
 
 <body class="bg-black">
   <div id="app">
-    <div v-for="play" class="flex justify-center mt-50">
+    <div v-if="play" class="flex justify-center mt-50">
       <button class="w-30 h-15 bg-white/20 backdrop-blur-lg shadow-xl/30 shadow-white text-white text-2xl font-bold rounded-lg hover:scale-110" @click="showgame">Play</button>
     </div>
     <div id="game" v-if="game">
